@@ -30,7 +30,7 @@ public class FilmController {
             log.info("Создан фильм с id=" + film.getId());
         } else {
             log.warn("Дата релиза фильма раньше 1895-12-28");
-            throw new ValidationException(HttpStatus.NOT_FOUND, "Дата релиза фильма раньше 1895-12-28");
+            throw new ValidationException(HttpStatus.BAD_REQUEST, "Дата релиза фильма раньше 1895-12-28");
         }
 
         return film;
@@ -48,7 +48,7 @@ public class FilmController {
             }
         } else {
             log.warn("Не найден фильм с id=" + film.getId());
-            throw new NotFoundException(HttpStatus.BAD_REQUEST, "Не найден фильм с id=" + film.getId());
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "Не найден фильм с id=" + film.getId());
         }
 
         return film;
