@@ -11,14 +11,14 @@ import java.time.LocalDate;
 public class Film {
     private int id;
 
-    @NotBlank
+    @NotBlank(message = "не должно быть пустым")
     private String name;
 
-    @Size(max = 200)
+    @Size(max = 200, message = "размер должен находиться в диапазоне от 0 до 200")
     private String description;
 
     private LocalDate releaseDate;
 
-    @Positive
+    @Positive(message = "должно быть больше 0")
     private int duration;
 }

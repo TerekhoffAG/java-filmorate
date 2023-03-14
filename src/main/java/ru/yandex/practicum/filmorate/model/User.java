@@ -11,17 +11,16 @@ import java.time.LocalDate;
 public class User {
     private int id;
 
-    @Email
-    @NotBlank
+    @Email(message = "должно иметь формат адреса электронной почты")
+    @NotBlank(message = "не должно быть пустым")
     private String email;
 
-    @NotNull
-    @NotBlank
-    @Pattern(regexp = "\\S*")
+    @NotBlank(message = "не должно быть пустым")
+    @Pattern(regexp = "\\S*", message = "должно соответствовать \"\\S*\"")
     private String login;
 
     private String name;
 
-    @Past
+    @Past(message = "должно содержать прошедшую дату")
     private LocalDate birthday;
 }

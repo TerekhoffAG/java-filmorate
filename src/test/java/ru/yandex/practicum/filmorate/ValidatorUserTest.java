@@ -48,7 +48,7 @@ public class ValidatorUserTest {
         user.setLogin(null);
         Set<ConstraintViolation<User>> actual = validator.validate(user);
 
-        assertEquals("не должно равняться null", actual.stream().iterator().next().getMessage());
+        assertEquals("не должно быть пустым", actual.stream().iterator().next().getMessage());
     }
 
     @Test
