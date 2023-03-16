@@ -3,46 +3,35 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
-public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int idGenerator = 0;
-
+public class UserController extends AbstractRestController<User> {
     @PostMapping()
-    public User createUser(@Valid @RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         user.setId(++idGenerator);
-        users.put(user.getId(), user);
-        log.info("Создан пользователь с id=" + user.getId());
+        localRepository.put(user.getId(), user);
+        log.info(LogMessage.CREATE_USER, user.getId());
 
         return user;
     }
 
     @PutMapping()
-    public User updateUser(@Valid @RequestBody User user) {
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            log.info("Обновлён пользователь с id=" + user.getId());
+    public User update(@Valid @RequestBody User user) {
+        if (localRepository.containsKey(user.getId())) {
+            localRepository.put(user.getId(), user);
+            log.info(LogMessage.UPDATE_USER, user.getId());
         } else {
-            log.warn("Не найден пользователь с id=" + user.getId());
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "Не найден пользователь с id=" + user.getId());
+            log.warn(LogMessage.NOT_FOUND_USER, user.getId());
+            throw new NotFoundException(HttpStatus.NOT_FOUND, LogMessage.NOT_FOUND_USER + user.getId());
         }
 
         return user;
-    }
-
-    @GetMapping
-    public List<User> getAllUsers() {
-        return new ArrayList<>(users.values());
     }
 }

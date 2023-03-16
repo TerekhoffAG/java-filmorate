@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.ConstraintViolation;
@@ -39,15 +40,15 @@ public class ValidatorFilmTest {
         film.setName("");
         Set<ConstraintViolation<Film>> actual = validator.validate(film);
 
-        assertEquals("не должно быть пустым", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.NOT_BLANK, actual.stream().iterator().next().getMessage());
     }
 
     @Test
     public void shouldInvalidDescriptionField() {
-        film.setDescription("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.");
+        film.setDescription("Пятеро друзей (комик-группа «Шарло»), приезжают в город Бризуль. Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.");
         Set<ConstraintViolation<Film>> actual = validator.validate(film);
 
-        assertEquals("размер должен находиться в диапазоне от 0 до 200", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.MAX_LENGTH_TEXT, actual.stream().iterator().next().getMessage());
     }
 
     @Test
@@ -56,7 +57,7 @@ public class ValidatorFilmTest {
 
         Set<ConstraintViolation<Film>> actual = validator.validate(film);
 
-        assertEquals("Дата релиза фильма раньше 1895-12-28", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.RELEASE_DATE, actual.stream().iterator().next().getMessage());
     }
 
     @Test
@@ -64,6 +65,6 @@ public class ValidatorFilmTest {
         film.setDuration(-200);
         Set<ConstraintViolation<Film>> actual = validator.validate(film);
 
-        assertEquals("должно быть больше 0", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.POSITIVE, actual.stream().iterator().next().getMessage());
     }
 }

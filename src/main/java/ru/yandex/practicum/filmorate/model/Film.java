@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.ReleaseDate;
+import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -12,15 +13,15 @@ import java.time.LocalDate;
 public class Film {
     private int id;
 
-    @NotBlank(message = "не должно быть пустым")
+    @NotBlank(message = ValidatorMessage.NOT_BLANK)
     private String name;
 
-    @Size(max = 200, message = "размер должен находиться в диапазоне от 0 до 200")
+    @Size(max = 200, message = ValidatorMessage.MAX_LENGTH_TEXT)
     private String description;
 
     @ReleaseDate
     private LocalDate releaseDate;
 
-    @Positive(message = "должно быть больше 0")
+    @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
 }

@@ -1,5 +1,8 @@
 package ru.yandex.practicum.filmorate.annotation;
 
+import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
+import ru.yandex.practicum.filmorate.validator.DefaultFieldsUserValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -14,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = DefaultFieldsUserValidator.class)
 public @interface DefaultFieldsUser {
-    String message() default "{DefaultName.invalid}";
+    String message() default ValidatorMessage.DEFAULT_FIELDS_USER;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

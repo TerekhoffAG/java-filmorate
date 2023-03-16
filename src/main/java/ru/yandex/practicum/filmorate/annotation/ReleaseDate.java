@@ -1,5 +1,8 @@
 package ru.yandex.practicum.filmorate.annotation;
 
+import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
+import ru.yandex.practicum.filmorate.validator.ReleaseDateValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -14,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = ReleaseDateValidator.class)
 public @interface ReleaseDate {
-    String message() default "Дата релиза фильма раньше 1895-12-28";
+    String message() default ValidatorMessage.RELEASE_DATE;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

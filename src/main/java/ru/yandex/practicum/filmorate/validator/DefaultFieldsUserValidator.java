@@ -1,5 +1,6 @@
-package ru.yandex.practicum.filmorate.annotation;
+package ru.yandex.practicum.filmorate.validator;
 
+import ru.yandex.practicum.filmorate.annotation.DefaultFieldsUser;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ConstraintValidator;
@@ -13,7 +14,7 @@ public class DefaultFieldsUserValidator implements ConstraintValidator<DefaultFi
 
     @Override
     public boolean isValid(User model, ConstraintValidatorContext cxt) {
-        if (model.getName() == null) {
+        if (model.getName() == null || model.getName().isEmpty()) {
             model.setName(model.getLogin());
         }
         return true;

@@ -2,8 +2,9 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.annotation.DefaultFieldsUserValidator;
+import ru.yandex.practicum.filmorate.validator.DefaultFieldsUserValidator;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -40,7 +41,7 @@ public class ValidatorUserTest {
         user.setLogin("dolore ullamco");
         Set<ConstraintViolation<User>> actual = validator.validate(user);
 
-        assertEquals("должно соответствовать \"\\S*\"", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.NO_SPACE, actual.stream().iterator().next().getMessage());
     }
 
     @Test
@@ -48,7 +49,7 @@ public class ValidatorUserTest {
         user.setLogin(null);
         Set<ConstraintViolation<User>> actual = validator.validate(user);
 
-        assertEquals("не должно быть пустым", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.NOT_BLANK, actual.stream().iterator().next().getMessage());
     }
 
     @Test
@@ -56,7 +57,7 @@ public class ValidatorUserTest {
         user.setLogin("");
         Set<ConstraintViolation<User>> actual = validator.validate(user);
 
-        assertEquals("не должно быть пустым", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.NOT_BLANK, actual.stream().iterator().next().getMessage());
     }
 
     @Test
@@ -64,7 +65,7 @@ public class ValidatorUserTest {
         user.setEmail("mail.ru");
         Set<ConstraintViolation<User>> actual = validator.validate(user);
 
-        assertEquals("должно иметь формат адреса электронной почты", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.EMAIL, actual.stream().iterator().next().getMessage());
     }
 
     @Test
@@ -72,15 +73,15 @@ public class ValidatorUserTest {
         user.setEmail("");
         Set<ConstraintViolation<User>> actual = validator.validate(user);
 
-        assertEquals("не должно быть пустым", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.NOT_BLANK, actual.stream().iterator().next().getMessage());
     }
 
     @Test
     public void shouldInvalidBirthdayField() {
-        user.setBirthday(LocalDate.now());
+        user.setBirthday(LocalDate.of(2246, 8, 20));
         Set<ConstraintViolation<User>> actual = validator.validate(user);
 
-        assertEquals("должно содержать прошедшую дату", actual.stream().iterator().next().getMessage());
+        assertEquals(ValidatorMessage.PAST_DATE, actual.stream().iterator().next().getMessage());
     }
 
     @Test
