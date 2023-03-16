@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.ConstraintViolation;
@@ -24,7 +22,7 @@ public class ValidatorFilmTest {
         film = Film.builder()
                 .name("nisi eiusmod")
                 .description("adipisicing")
-                .releaseDate(LocalDate.of(1967, 01, 25))
+                .releaseDate(LocalDate.of(1967, 1, 25))
                 .duration(100)
                 .build();
     }
@@ -54,11 +52,11 @@ public class ValidatorFilmTest {
 
     @Test
     public void shouldInvalidReleaseDateField() {
-        film.setReleaseDate(LocalDate.of(1890, 01, 25));
+        film.setReleaseDate(LocalDate.of(1890, 1, 25));
 
-        assertThrows(ValidationException.class, () -> {
-            new FilmController().createFilm(film);
-        });
+        Set<ConstraintViolation<Film>> actual = validator.validate(film);
+
+        assertEquals("Дата релиза фильма раньше 1895-12-28", actual.stream().iterator().next().getMessage());
     }
 
     @Test

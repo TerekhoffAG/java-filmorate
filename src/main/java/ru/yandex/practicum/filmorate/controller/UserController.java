@@ -21,9 +21,6 @@ public class UserController {
 
     @PostMapping()
     public User createUser(@Valid @RequestBody User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
         user.setId(++idGenerator);
         users.put(user.getId(), user);
         log.info("Создан пользователь с id=" + user.getId());
@@ -34,9 +31,6 @@ public class UserController {
     @PutMapping()
     public User updateUser(@Valid @RequestBody User user) {
         if (users.containsKey(user.getId())) {
-            if (user.getName() == null) {
-                user.setName(user.getLogin());
-            }
             users.put(user.getId(), user);
             log.info("Обновлён пользователь с id=" + user.getId());
         } else {
