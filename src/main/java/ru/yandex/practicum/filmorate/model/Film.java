@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.annotation.ReleaseDate;
 import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
@@ -10,9 +11,8 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class Film {
-    private int id;
-
+@EqualsAndHashCode(callSuper = true)
+public class Film extends DataModel {
     @NotBlank(message = ValidatorMessage.NOT_BLANK)
     private String name;
 

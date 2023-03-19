@@ -17,6 +17,7 @@ public class DefaultFieldsUserValidator implements ConstraintValidator<DefaultFi
         if (model.getName() == null || model.getName().isEmpty()) {
             model.setName(model.getLogin());
         }
+
         return true;
     }
 }

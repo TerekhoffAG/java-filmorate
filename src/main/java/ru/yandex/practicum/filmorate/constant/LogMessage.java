@@ -7,4 +7,7 @@ public final class LogMessage {
     public static final String CREATE_FILM = "Создан фильм с id = {}";
     public static final String UPDATE_FILM = "Обновлён фильм с id = {}";
     public static final String NOT_FOUND_FILM = "Не найден фильм с id = {}";
+    public static final String GET_REQUEST = "Получен get запрос.";
+    public static final String POST_REQUEST = "Получен post запрос.";
+    public static final String PUT_REQUEST = "Получен put запрос.";
 }
