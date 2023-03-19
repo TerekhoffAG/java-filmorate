@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
-@org.springframework.web.bind.annotation.RestController
+@RestController
 @RequestMapping("/users")
 public class UserController extends AbstractRestController<User> {
     @PostMapping()
