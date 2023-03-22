@@ -9,8 +9,8 @@ import java.util.Map;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    protected final Map<Integer, User> users = new HashMap<>();
-    protected int idGenerator = 0;
+    private final Map<Integer, User> users = new HashMap<>();
+    private int idGenerator = 0;
 
     @Override
     public User save(User user) {

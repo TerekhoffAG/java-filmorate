@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -26,4 +27,6 @@ public class User extends DataModel {
 
     @PastOrPresent(message = ValidatorMessage.PAST_DATE)
     private LocalDate birthday;
+
+    private Set<Integer> friends;
 }

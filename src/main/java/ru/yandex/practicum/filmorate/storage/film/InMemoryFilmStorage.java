@@ -9,8 +9,8 @@ import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    protected final Map<Integer, Film> films = new HashMap<>();
-    protected int idGenerator = 0;
+    private final Map<Integer, Film> films = new HashMap<>();
+    private int idGenerator = 0;
 
     @Override
     public Film save(Film film) {
