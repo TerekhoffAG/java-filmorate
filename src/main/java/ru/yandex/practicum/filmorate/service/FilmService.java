@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -15,9 +14,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FilmService extends AbstractService<FilmStorage, Film> {
+public class FilmService extends AbstractService<Integer, Film> {
     public boolean saveLike(int id, int userId) {
-        Film film = (Film) getModelsById(id);
+        Film film = getModelsById(id);
         if (film != null) {
             boolean res = film.getLikes().add(userId);
             if (res) {
@@ -30,7 +29,7 @@ public class FilmService extends AbstractService<FilmStorage, Film> {
     }
 
     public boolean removeLike(int id, int userId) {
-        Film film = (Film) getModelsById(id);
+        Film film = getModelsById(id);
         if (film != null) {
             boolean res = film.getLikes().remove(userId);
             if (res) {

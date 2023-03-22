@@ -7,27 +7,53 @@ import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.Collection;
 
 @Slf4j
-public abstract class AbstractService<S extends Storage, M extends DataModel> {
-    protected S storage;
+public abstract class AbstractService<K, M extends DataModel> {
+    protected Storage<K, M> storage;
 
-    public DataModel saveModel(M model) {
-        return storage.save(model);
+    public M saveModel(M model, String logMessage) {
+        M res = storage.save(model);
+        log.info(logMessage, model.getId());
+
+        return res;
     }
 
-    public DataModel updateModel(M model) {
-        return storage.update(model);
+    public M updateModel(M model, String logMessage, String expMessage) {
+        M res = storage.update(model);
+        if (res == null) {
+            log.warn(expMessage, model.getId());
+            throw new RuntimeException(String.format(expMessage, model.getId()));
+        }
+        log.info(logMessage, model.getId());
+
+        return res;
     }
 
-    public DataModel removeModel(M model) {
-        storage.remove(model);
-        return model;
+    public M removeModel(M model, String logMessage, String expMessage) {
+        M res = storage.remove(model);
+        if (res == null) {
+            log.warn(expMessage, model.getId());
+            throw new RuntimeException(String.format(expMessage, model.getId()));
+        }
+        log.info(logMessage, model.getId());
+
+        return res;
     }
 
-    public DataModel getModelsById(Integer id) {
-        return storage.findOne(id);
+    public M getModelsById(K id, String logMessage, String expMessage) {
+        M res = storage.findOne(id);
+        if (res == null) {
+            log.warn(logMessage, id);
+            throw new RuntimeException(String.format(expMessage, id));
+        }
+
+        return res;
     }
 
     public Collection<M> getAllModels() {
         return storage.findAll();
+    }
+
+    protected M getModelsById(K id) {
+        return storage.findOne(id);
     }
 }

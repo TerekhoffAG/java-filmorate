@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.Set;
@@ -16,10 +15,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService extends AbstractService<UserStorage, User> {
+public class UserService extends AbstractService<Integer, User> {
     public boolean saveFriend(int id, int friendId) {
         if (id != friendId) {
-            User user = (User) getModelsById(id);
+            User user = getModelsById(id);
             if (user != null) {
                 boolean res = user.getFriends().add(friendId);
                 if (res) {
@@ -35,7 +34,7 @@ public class UserService extends AbstractService<UserStorage, User> {
     }
 
     public boolean removeFriend(int id, int friendId) {
-        User user = (User) getModelsById(id);
+        User user = getModelsById(id);
         if (user != null) {
             boolean res = user.getFriends().remove(id);
             if (res) {
@@ -48,7 +47,7 @@ public class UserService extends AbstractService<UserStorage, User> {
     }
 
     public Collection<User> getFriends(int id) {
-        User user = (User) getModelsById(id);
+        User user = getModelsById(id);
         if (user != null) {
             Set<Integer> friends = user.getFriends();
             if (!friends.isEmpty()) {
@@ -64,8 +63,8 @@ public class UserService extends AbstractService<UserStorage, User> {
     }
 
     public Collection<User> getMutualFriends(int id, int friendId) {
-        User user = (User) getModelsById(id);
-        User friend = (User) getModelsById(friendId);
+        User user = getModelsById(id);
+        User friend = getModelsById(friendId);
         if (user != null && friend != null) {
             return user.getFriends().stream()
                     .filter(friend.getFriends()::contains)
