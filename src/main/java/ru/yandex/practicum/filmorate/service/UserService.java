@@ -1,12 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.Set;
@@ -14,35 +15,42 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserService extends AbstractService<Integer, User> {
-    public boolean saveFriend(int id, int friendId) {
-        if (id != friendId) {
+
+    @Autowired
+    public UserService(UserStorage storage) {
+        super(storage);
+    }
+
+    public void saveFriend(int id, int otherUserId) {
+        if (id != otherUserId) {
             User user = getModelsById(id);
-            if (user != null) {
-                boolean res = user.getFriends().add(friendId);
-                if (res) {
-                    log.info(LogMessage.ADD_FRIEND, friendId);
-                }
-                return res;
+            User otherUser = getModelsById(otherUserId);
+            if (user != null && otherUser != null) {
+                user.getFriends().add(otherUserId);
+                otherUser.getFriends().add(id);
+
+                log.info(String.format(LogMessage.ADD_FRIEND, id, otherUserId));
             } else {
-                throw new UserNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, id));
+                String message = String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : otherUserId);
+                throw new UserNotFoundException(message);
             }
         } else {
             throw new RuntimeException(ExpMessage.NOT_ADD_FRIEND_HIMSELF);
         }
     }
 
-    public boolean removeFriend(int id, int friendId) {
+    public void removeFriend(int id, int otherUserId) {
         User user = getModelsById(id);
-        if (user != null) {
-            boolean res = user.getFriends().remove(id);
-            if (res) {
-                log.info(LogMessage.REMOVE_FRIEND, friendId);
-            }
-            return res;
+        User otherUser = getModelsById(otherUserId);
+        if (user != null && otherUser != null) {
+            user.getFriends().remove(otherUserId);
+            otherUser.getFriends().remove(id);
+
+            log.info(String.format(LogMessage.REMOVE_FRIEND, id, otherUserId));
         } else {
-            throw new UserNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, id));
+            String message = String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : otherUserId);
+            throw new UserNotFoundException(message);
         }
     }
 

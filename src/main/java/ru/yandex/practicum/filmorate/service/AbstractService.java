@@ -8,7 +8,11 @@ import java.util.Collection;
 
 @Slf4j
 public abstract class AbstractService<K, M extends DataModel> {
-    protected Storage<K, M> storage;
+    protected final Storage<K, M> storage;
+
+    public AbstractService(Storage<K, M> storage) {
+        this.storage = storage;
+    }
 
     public M saveModel(M model, String logMessage) {
         M res = storage.save(model);
