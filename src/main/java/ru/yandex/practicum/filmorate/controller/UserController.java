@@ -3,13 +3,13 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,7 +27,7 @@ public class UserController {
     @PutMapping()
     public User update(@Valid @RequestBody User user) {
         log.info(LogMessage.PUT_REQUEST);
-        return service.updateModel(user, LogMessage.UPDATE_USER, LogMessage.NOT_FOUND_USER);
+        return service.updateModel(user, LogMessage.UPDATE_USER, ExpMessage.NOT_FOUND_USER);
     }
 
     @GetMapping

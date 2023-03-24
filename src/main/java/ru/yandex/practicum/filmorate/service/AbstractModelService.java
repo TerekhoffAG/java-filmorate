@@ -1,16 +1,17 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.model.DataModel;
 import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.util.Collection;
 
 @Slf4j
-public abstract class AbstractService<K, M extends DataModel> {
+public abstract class AbstractModelService<K, M extends DataModel> {
     protected final Storage<K, M> storage;
 
-    public AbstractService(Storage<K, M> storage) {
+    public AbstractModelService(Storage<K, M> storage) {
         this.storage = storage;
     }
 
@@ -25,7 +26,7 @@ public abstract class AbstractService<K, M extends DataModel> {
         M res = storage.update(model);
         if (res == null) {
             log.warn(expMessage, model.getId());
-            throw new RuntimeException(String.format(expMessage, model.getId()));
+            throw new ModelNotFoundException(String.format(expMessage, model.getId()));
         }
         log.info(logMessage, model.getId());
 
@@ -36,7 +37,7 @@ public abstract class AbstractService<K, M extends DataModel> {
         M res = storage.remove(model);
         if (res == null) {
             log.warn(expMessage, model.getId());
-            throw new RuntimeException(String.format(expMessage, model.getId()));
+            throw new ModelNotFoundException(String.format(expMessage, model.getId()));
         }
         log.info(logMessage, model.getId());
 
@@ -47,7 +48,7 @@ public abstract class AbstractService<K, M extends DataModel> {
         M res = storage.findOne(id);
         if (res == null) {
             log.warn(logMessage, id);
-            throw new RuntimeException(String.format(expMessage, id));
+            throw new ModelNotFoundException(String.format(expMessage, id));
         }
 
         return res;

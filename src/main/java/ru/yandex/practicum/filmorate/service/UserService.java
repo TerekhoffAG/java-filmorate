@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserService extends AbstractService<Integer, User> {
+public class UserService extends AbstractModelService<Integer, User> {
 
     @Autowired
     public UserService(UserStorage storage) {

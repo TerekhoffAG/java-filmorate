@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class FilmService extends AbstractService<Integer, Film> {
+public class FilmService extends AbstractModelService<Integer, Film> {
 
     @Autowired
     public FilmService(FilmStorage storage) {
