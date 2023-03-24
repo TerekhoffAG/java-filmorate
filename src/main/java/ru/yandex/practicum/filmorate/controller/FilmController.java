@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
+import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -34,5 +35,28 @@ public class FilmController {
     public Collection<Film> getAll() {
         log.info(LogMessage.GET_REQUEST);
         return service.getAllModels();
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void likeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
+        log.info(LogMessage.PUT_REQUEST);
+        service.saveLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        log.info(LogMessage.DELETE_REQUEST);
+        service.removeLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
+        log.info(LogMessage.GET_REQUEST);
+        Collection<Film> res = service.getRatingFilms(count);
+        if (res == null) {
+            throw new ModelNotFoundException(ExpMessage.NOT_FOUND_FILMS);
+        }
+
+        return res;
     }
 }

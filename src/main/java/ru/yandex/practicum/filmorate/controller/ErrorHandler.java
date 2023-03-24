@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserHimselfFriendException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 import java.util.ArrayList;
@@ -40,6 +37,18 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUserHimselfFriendException(final UserHimselfFriendException exp) {
+        return new ErrorResponse(exp.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleFilmDoubleLikeException(final FilmDoubleLikeException exp) {
+        return new ErrorResponse(exp.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleLikeNotFoundException(final LikeNotFoundException exp) {
         return new ErrorResponse(exp.getMessage());
     }
 

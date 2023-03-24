@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
+import ru.yandex.practicum.filmorate.exception.FilmDoubleLikeException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -21,27 +24,29 @@ public class FilmService extends AbstractModelService<Integer, Film> {
         super(storage);
     }
 
-    public boolean saveLike(int id, int userId) {
+    public void saveLike(Integer id, Integer userId) {
         Film film = getModelsById(id);
         if (film != null) {
             boolean res = film.getLikes().add(userId);
             if (res) {
                 log.info(LogMessage.ADD_LIKE, userId);
+            } else {
+                throw new FilmDoubleLikeException(ExpMessage.NOT_ADD_DOUBLE_LIKE);
             }
-            return res;
         } else {
             throw new FilmNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
         }
     }
 
-    public boolean removeLike(int id, int userId) {
+    public void removeLike(int id, int userId) {
         Film film = getModelsById(id);
         if (film != null) {
             boolean res = film.getLikes().remove(userId);
             if (res) {
                 log.info(LogMessage.REMOVE_LIKE, userId);
+            } else {
+                throw new LikeNotFoundException(String.format(ExpMessage.NOT_FOUND_LIKE, userId));
             }
-            return res;
         } else {
             throw new FilmNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
         }
