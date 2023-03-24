@@ -37,7 +37,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleFilmNotFoundException(final MethodArgumentNotValidException exp) {
         List<String> errors = new ArrayList<>();
         for (FieldError error : exp.getBindingResult().getFieldErrors()) {
