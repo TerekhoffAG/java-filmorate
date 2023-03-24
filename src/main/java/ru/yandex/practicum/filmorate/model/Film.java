@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -26,5 +27,5 @@ public class Film extends DataModel {
     @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
 
-    private Set<Integer> likes;
+    private final Set<Integer> likes = new HashSet<>();
 }

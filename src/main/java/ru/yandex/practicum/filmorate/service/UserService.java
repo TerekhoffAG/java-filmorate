@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
+import ru.yandex.practicum.filmorate.exception.UserHimselfFriendException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -22,7 +23,7 @@ public class UserService extends AbstractModelService<Integer, User> {
         super(storage);
     }
 
-    public void saveFriend(int id, int otherUserId) {
+    public void saveFriend(Integer id, Integer otherUserId) {
         if (id != otherUserId) {
             User user = getModelsById(id);
             User otherUser = getModelsById(otherUserId);
@@ -36,11 +37,11 @@ public class UserService extends AbstractModelService<Integer, User> {
                 throw new UserNotFoundException(message);
             }
         } else {
-            throw new RuntimeException(ExpMessage.NOT_ADD_FRIEND_HIMSELF);
+            throw new UserHimselfFriendException(ExpMessage.NOT_ADD_FRIEND_HIMSELF);
         }
     }
 
-    public void removeFriend(int id, int otherUserId) {
+    public void removeFriend(Integer id, Integer otherUserId) {
         User user = getModelsById(id);
         User otherUser = getModelsById(otherUserId);
         if (user != null && otherUser != null) {
@@ -54,7 +55,7 @@ public class UserService extends AbstractModelService<Integer, User> {
         }
     }
 
-    public Collection<User> getFriends(int id) {
+    public Collection<User> getFriends(Integer id) {
         User user = getModelsById(id);
         if (user != null) {
             Set<Integer> friends = user.getFriends();
@@ -70,7 +71,7 @@ public class UserService extends AbstractModelService<Integer, User> {
         }
     }
 
-    public Collection<User> getMutualFriends(int id, int friendId) {
+    public Collection<User> getCommonFriends(int id, int friendId) {
         User user = getModelsById(id);
         User friend = getModelsById(friendId);
         if (user != null && friend != null) {
