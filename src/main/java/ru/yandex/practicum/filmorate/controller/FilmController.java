@@ -31,6 +31,12 @@ public class FilmController {
         return service.updateModel(film, LogMessage.UPDATE_FILM, ExpMessage.NOT_FOUND_FILM);
     }
 
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        log.info(LogMessage.GET_REQUEST);
+        return service.getModelsById(id, LogMessage.NOT_FOUND_FILM, ExpMessage.NOT_FOUND_FILM);
+    }
+
     @GetMapping
     public Collection<Film> getAll() {
         log.info(LogMessage.GET_REQUEST);
