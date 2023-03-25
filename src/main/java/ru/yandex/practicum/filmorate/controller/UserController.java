@@ -69,11 +69,6 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
         log.info(LogMessage.GET_REQUEST);
-        Collection<User> res = service.getCommonFriends(id, otherId);
-        if (res.isEmpty()) {
-            throw new ModelNotFoundException(ExpMessage.NOT_FOUND_COMMON_FRIENDS);
-        }
-
-        return res;
+        return service.getCommonFriends(id, otherId);
     }
 }
