@@ -35,6 +35,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleLikeNotFoundException(final LikeNotFoundException exp) {
+        return new ErrorResponse(exp.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUserHimselfFriendException(final UserHimselfFriendException exp) {
         return new ErrorResponse(exp.getMessage());
@@ -43,12 +49,6 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleFilmDoubleLikeException(final FilmDoubleLikeException exp) {
-        return new ErrorResponse(exp.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleLikeNotFoundException(final LikeNotFoundException exp) {
         return new ErrorResponse(exp.getMessage());
     }
 
