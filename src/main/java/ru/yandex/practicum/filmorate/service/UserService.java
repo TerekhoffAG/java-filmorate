@@ -64,7 +64,7 @@ public class UserService extends AbstractModelService<Integer, User> {
                         .map(storage::findOne)
                         .collect(Collectors.toList());
             } else {
-                return null;
+                throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
             }
         } else {
             throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, id));

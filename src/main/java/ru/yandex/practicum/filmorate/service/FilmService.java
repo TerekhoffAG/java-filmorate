@@ -58,7 +58,7 @@ public class FilmService extends AbstractModelService<Integer, Film> {
                     .limit(count)
                     .collect(Collectors.toList());
         } else {
-            return null;
+            throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FILMS);
         }
     }
 }

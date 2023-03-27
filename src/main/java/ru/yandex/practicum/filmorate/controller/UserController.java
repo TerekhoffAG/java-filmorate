@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -58,12 +57,7 @@ public class UserController {
     @GetMapping("/{id}/friends")
     public Collection<User> getUserFriends(@PathVariable Integer id) {
         log.info(LogMessage.GET_REQUEST);
-        Collection<User> res = service.getFriends(id);
-        if (res == null) {
-            throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
-        }
-
-        return res;
+        return service.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
