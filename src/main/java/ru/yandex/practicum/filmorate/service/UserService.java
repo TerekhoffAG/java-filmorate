@@ -27,16 +27,14 @@ public class UserService extends AbstractModelService<Integer, User> {
         if (id != otherUserId) {
             User user = getModelsById(id);
             User otherUser = getModelsById(otherUserId);
-            if (user != null && otherUser != null) {
-                user.getFriends().add(otherUserId);
-                otherUser.getFriends().add(id);
+            checkUsers(user, otherUser);
 
-                log.info(String.format(LogMessage.ADD_FRIEND, id, otherUserId));
-            } else {
-                String message = String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : otherUserId);
-                throw new ObjectNotFoundException(message);
-            }
-        } else {
+            user.getFriends().add(otherUserId);
+            otherUser.getFriends().add(id);
+
+            log.info(String.format(LogMessage.ADD_FRIEND, id, otherUserId));
+        }
+         else {
             throw new UserHimselfFriendException(ExpMessage.NOT_ADD_FRIEND_HIMSELF);
         }
     }
@@ -44,15 +42,12 @@ public class UserService extends AbstractModelService<Integer, User> {
     public void removeFriend(Integer id, Integer otherUserId) {
         User user = getModelsById(id);
         User otherUser = getModelsById(otherUserId);
-        if (user != null && otherUser != null) {
-            user.getFriends().remove(otherUserId);
-            otherUser.getFriends().remove(id);
+        checkUsers(user, otherUser);
 
-            log.info(String.format(LogMessage.REMOVE_FRIEND, id, otherUserId));
-        } else {
-            String message = String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : otherUserId);
-            throw new ObjectNotFoundException(message);
-        }
+        user.getFriends().remove(otherUserId);
+        otherUser.getFriends().remove(id);
+
+        log.info(String.format(LogMessage.REMOVE_FRIEND, id, otherUserId));
     }
 
     public Collection<User> getFriends(Integer id) {
@@ -67,20 +62,24 @@ public class UserService extends AbstractModelService<Integer, User> {
                 throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
             }
         } else {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, id));
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER));
         }
     }
 
-    public Collection<User> getCommonFriends(int id, int friendId) {
+    public Collection<User> getCommonFriends(int id, int otherId) {
         User user = getModelsById(id);
-        User friend = getModelsById(friendId);
-        if (user != null && friend != null) {
-            return user.getFriends().stream()
-                    .filter(friend.getFriends()::contains)
-                    .map(storage::findOne)
-                    .collect(Collectors.toList());
-        } else {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : friendId));
+        User otherUser = getModelsById(otherId);
+        checkUsers(user, otherUser);
+
+        return user.getFriends().stream()
+                .filter(otherUser.getFriends()::contains)
+                .map(storage::findOne)
+                .collect(Collectors.toList());
+    }
+
+    private void checkUsers(User user, User otherUser) {
+        if (user == null || otherUser == null) {
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER));
         }
     }
 }

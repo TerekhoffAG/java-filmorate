@@ -38,7 +38,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film findOne(Integer id) {
-        return films.getOrDefault(id, null);
+        return films.get(id);
     }
 
     @Override

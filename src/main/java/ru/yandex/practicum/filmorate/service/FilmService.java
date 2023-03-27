@@ -11,11 +11,13 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class FilmService extends AbstractModelService<Integer, Film> {
+    private final Comparator<Film> sortingComparator = (a, b) -> b.getLikes().size() - a.getLikes().size();
 
     @Autowired
     public FilmService(FilmStorage storage) {
@@ -48,7 +50,7 @@ public class FilmService extends AbstractModelService<Integer, Film> {
         Collection<Film> films = getAllModels();
         if (!films.isEmpty()) {
             return films.stream()
-                    .sorted((a, b) -> b.getLikes().size() - a.getLikes().size())
+                    .sorted(sortingComparator)
                     .limit(count)
                     .collect(Collectors.toList());
         } else {
