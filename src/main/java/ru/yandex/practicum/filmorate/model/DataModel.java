@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public abstract class DataModel {
-    private int id;
+    private Integer id;
 }

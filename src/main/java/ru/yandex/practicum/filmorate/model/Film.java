@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,8 @@ import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -24,4 +27,7 @@ public class Film extends DataModel {
 
     @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
+
+    @JsonIgnore
+    private final Set<Integer> likes = new HashSet<>();
 }
