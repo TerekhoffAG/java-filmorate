@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
-import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -60,7 +60,7 @@ public class UserController {
         log.info(LogMessage.GET_REQUEST);
         Collection<User> res = service.getFriends(id);
         if (res == null) {
-            throw new ModelNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
+            throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
         }
 
         return res;

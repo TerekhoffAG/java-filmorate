@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.exception.FilmDoubleLikeException;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.LikeNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -33,7 +32,7 @@ public class FilmService extends AbstractModelService<Integer, Film> {
                 throw new FilmDoubleLikeException(ExpMessage.NOT_ADD_DOUBLE_LIKE);
             }
         } else {
-            throw new FilmNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
         }
     }
 
@@ -44,10 +43,10 @@ public class FilmService extends AbstractModelService<Integer, Film> {
             if (res) {
                 log.info(LogMessage.REMOVE_LIKE, userId);
             } else {
-                throw new LikeNotFoundException(String.format(ExpMessage.NOT_FOUND_LIKE, userId));
+                throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_LIKE, userId));
             }
         } else {
-            throw new FilmNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
         }
     }
 

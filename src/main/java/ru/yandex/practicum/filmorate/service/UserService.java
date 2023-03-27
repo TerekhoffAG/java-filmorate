@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserHimselfFriendException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -34,7 +34,7 @@ public class UserService extends AbstractModelService<Integer, User> {
                 log.info(String.format(LogMessage.ADD_FRIEND, id, otherUserId));
             } else {
                 String message = String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : otherUserId);
-                throw new UserNotFoundException(message);
+                throw new ObjectNotFoundException(message);
             }
         } else {
             throw new UserHimselfFriendException(ExpMessage.NOT_ADD_FRIEND_HIMSELF);
@@ -51,7 +51,7 @@ public class UserService extends AbstractModelService<Integer, User> {
             log.info(String.format(LogMessage.REMOVE_FRIEND, id, otherUserId));
         } else {
             String message = String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : otherUserId);
-            throw new UserNotFoundException(message);
+            throw new ObjectNotFoundException(message);
         }
     }
 
@@ -67,7 +67,7 @@ public class UserService extends AbstractModelService<Integer, User> {
                 return null;
             }
         } else {
-            throw new UserNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, id));
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, id));
         }
     }
 
@@ -80,7 +80,7 @@ public class UserService extends AbstractModelService<Integer, User> {
                     .map(storage::findOne)
                     .collect(Collectors.toList());
         } else {
-            throw new UserNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : friendId));
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER, user == null ? id : friendId));
         }
     }
 }
