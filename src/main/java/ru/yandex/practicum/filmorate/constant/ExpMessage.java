@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.constant;
 
 public final class ExpMessage {
+    public static final String NOT_FOUND_MODEL = "Не найдена модель.";
+
     public static final String NOT_FOUND_USER = "Не найден пользователь id = %d";
     public static final String NOT_FOUND_FRIEND = "Не найден друг id = %d";
     public static final String NOT_FOUND_FILM = "Не найден фильм id = %d";

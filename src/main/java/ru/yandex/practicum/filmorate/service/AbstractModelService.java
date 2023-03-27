@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.yandex.practicum.filmorate.constant.ExpMessage;
+import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.DataModel;
 import ru.yandex.practicum.filmorate.storage.Storage;
@@ -15,41 +17,32 @@ public abstract class AbstractModelService<K, M extends DataModel> {
         this.storage = storage;
     }
 
-    public M saveModel(M model, String logMessage) {
+    public M saveModel(M model) {
         M res = storage.save(model);
-        log.info(logMessage, model.getId());
+        log.info(LogMessage.CREATE_MODEL, model.getId());
 
         return res;
     }
 
-    public M updateModel(M model, String logMessage, String expMessage) {
+    public M updateModel(M model) {
         M res = storage.update(model);
-        if (res == null) {
-            log.warn(expMessage, model.getId());
-            throw new ObjectNotFoundException(String.format(expMessage, model.getId()));
-        }
-        log.info(logMessage, model.getId());
+        checkModel(res);
+        log.info(LogMessage.UPDATE_MODEL, model.getId());
 
         return res;
     }
 
-    public M removeModel(M model, String logMessage, String expMessage) {
+    public M removeModel(M model) {
         M res = storage.remove(model);
-        if (res == null) {
-            log.warn(expMessage, model.getId());
-            throw new ObjectNotFoundException(String.format(expMessage, model.getId()));
-        }
-        log.info(logMessage, model.getId());
+        checkModel(res);
+        log.info(LogMessage.REMOVE_MODEL, model.getId());
 
         return res;
     }
 
-    public M getModelsById(K id, String logMessage, String expMessage) {
+    public M getModelsById(K id) {
         M res = storage.findOne(id);
-        if (res == null) {
-            log.warn(logMessage, id);
-            throw new ObjectNotFoundException(String.format(expMessage, id));
-        }
+        checkModel(res);
 
         return res;
     }
@@ -58,7 +51,10 @@ public abstract class AbstractModelService<K, M extends DataModel> {
         return storage.findAll();
     }
 
-    protected M getModelsById(K id) {
-        return storage.findOne(id);
+    private void checkModel(M model) {
+        if (model == null) {
+            log.warn(ExpMessage.NOT_FOUND_MODEL);
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_MODEL));
+        }
     }
 }

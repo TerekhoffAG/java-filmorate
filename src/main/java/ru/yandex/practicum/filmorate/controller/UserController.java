@@ -21,19 +21,19 @@ public class UserController {
     @PostMapping()
     public User create(@Valid @RequestBody User user) {
         log.info(LogMessage.POST_REQUEST);
-        return service.saveModel(user, LogMessage.CREATE_USER);
+        return service.saveModel(user);
     }
 
     @PutMapping()
     public User update(@Valid @RequestBody User user) {
         log.info(LogMessage.PUT_REQUEST);
-        return service.updateModel(user, LogMessage.UPDATE_USER, ExpMessage.NOT_FOUND_USER);
+        return service.updateModel(user);
     }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Integer id) {
         log.info(LogMessage.GET_REQUEST);
-        return service.getModelsById(id, LogMessage.NOT_FOUND_USER, ExpMessage.NOT_FOUND_USER);
+        return service.getModelsById(id);
     }
 
     @GetMapping

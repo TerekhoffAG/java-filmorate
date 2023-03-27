@@ -24,29 +24,23 @@ public class FilmService extends AbstractModelService<Integer, Film> {
 
     public void saveLike(Integer id, Integer userId) {
         Film film = getModelsById(id);
-        if (film != null) {
-            boolean res = film.getLikes().add(userId);
-            if (res) {
-                log.info(LogMessage.ADD_LIKE, userId);
-            } else {
-                throw new FilmDoubleLikeException(ExpMessage.NOT_ADD_DOUBLE_LIKE);
-            }
+        checkFilm(film, id);
+        boolean res = film.getLikes().add(userId);
+        if (res) {
+            log.info(LogMessage.ADD_LIKE, userId);
         } else {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
+            throw new FilmDoubleLikeException(ExpMessage.NOT_ADD_DOUBLE_LIKE);
         }
     }
 
     public void removeLike(int id, int userId) {
         Film film = getModelsById(id);
-        if (film != null) {
-            boolean res = film.getLikes().remove(userId);
-            if (res) {
-                log.info(LogMessage.REMOVE_LIKE, userId);
-            } else {
-                throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_LIKE, userId));
-            }
+        checkFilm(film, id);
+        boolean res = film.getLikes().remove(userId);
+        if (res) {
+            log.info(LogMessage.REMOVE_LIKE, userId);
         } else {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_LIKE, userId));
         }
     }
 
@@ -59,6 +53,12 @@ public class FilmService extends AbstractModelService<Integer, Film> {
                     .collect(Collectors.toList());
         } else {
             throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FILMS);
+        }
+    }
+
+    private void checkFilm(Film film, Integer filmId) {
+        if (film == null) {
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, filmId));
         }
     }
 }

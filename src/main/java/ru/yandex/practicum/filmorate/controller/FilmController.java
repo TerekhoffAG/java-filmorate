@@ -21,19 +21,19 @@ public class FilmController {
     @PostMapping()
     public Film create(@Valid @RequestBody Film film) {
         log.info(LogMessage.POST_REQUEST);
-        return service.saveModel(film, LogMessage.CREATE_FILM);
+        return service.saveModel(film);
     }
 
     @PutMapping()
     public Film update(@Valid @RequestBody Film film) {
         log.info(LogMessage.PUT_REQUEST);
-        return service.updateModel(film, LogMessage.UPDATE_FILM, ExpMessage.NOT_FOUND_FILM);
+        return service.updateModel(film);
     }
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable Integer id) {
         log.info(LogMessage.GET_REQUEST);
-        return service.getModelsById(id, LogMessage.NOT_FOUND_FILM, ExpMessage.NOT_FOUND_FILM);
+        return service.getModelsById(id);
     }
 
     @GetMapping

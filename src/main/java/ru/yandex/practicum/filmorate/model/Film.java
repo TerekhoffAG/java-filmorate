@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,5 +28,6 @@ public class Film extends DataModel {
     @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
 
+    @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
 }
