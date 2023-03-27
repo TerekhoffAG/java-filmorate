@@ -33,8 +33,7 @@ public class UserService extends AbstractModelService<Integer, User> {
             otherUser.getFriends().add(id);
 
             log.info(String.format(LogMessage.ADD_FRIEND, id, otherUserId));
-        }
-         else {
+        } else {
             throw new UserHimselfFriendException(ExpMessage.NOT_ADD_FRIEND_HIMSELF);
         }
     }
