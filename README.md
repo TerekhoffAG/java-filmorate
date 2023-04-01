@@ -29,7 +29,7 @@ SELECT * FROM film;
 ```postgres-psql
 SELECT * FROM film WHERE id = ?;
 ```
--получение списка фильмов и их жанров
+- получение списка фильмов и их жанров
 ```postgres-psql
 SELECT f.name,
        g.name
@@ -37,7 +37,7 @@ FROM film f
 LEFT JOIN film_genre fg ON f.id = fg.film_id
 LEFT JOIN genre g ON fg.genre_id = g.id;
 ```
--получение списка популярных фильмов по лайкам
+- получение списка популярных фильмов по лайкам
 ```postgres-psql
 SELECT f.name,
        count(f.name) as likes
