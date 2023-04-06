@@ -65,6 +65,9 @@ public class UserService extends AbstractModelService<Integer, User> {
         }
     }
 
+    /**
+     * Получение списка общих друзей.
+     */
     public Collection<User> getCommonFriends(int id, int otherId) {
         User user = getModelsById(id);
         User otherUser = getModelsById(otherId);
