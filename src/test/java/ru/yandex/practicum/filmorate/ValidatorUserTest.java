@@ -21,7 +21,7 @@ public class ValidatorUserTest {
     @BeforeEach
     void beforeEach() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
-        user = new User(1, "dolore", "Nick Name", "mail@mail.ru", LocalDate.of(1946, 8, 20));
+        user = new User(1, "mail@mail.ru", "dolore", "Nick Name", LocalDate.of(1946, 8, 20));
     }
 
     @Test
