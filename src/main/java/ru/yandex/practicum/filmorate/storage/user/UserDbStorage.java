@@ -29,9 +29,9 @@ public class UserDbStorage implements UserStorage {
                 .withTableName(TABLE_NAME)
                 .usingGeneratedKeyColumns(USER_ID)
                 .executeAndReturnKey(Map.of(
+                        EMAIL, user.getEmail(),
                         LOGIN, user.getLogin(),
                         NAME, user.getName(),
-                        EMAIL, user.getEmail(),
                         BIRTHDAY, Date.valueOf(user.getBirthday())
                 )).intValue(); // TODO проверить что возвращает id
         user.setId(userPK);
