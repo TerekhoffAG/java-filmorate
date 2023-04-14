@@ -28,7 +28,7 @@ public class Film extends BaseModel {
 
     private Mpa mpa;
 
-    private Genre genre;
+    private Set<Genre> genres = new HashSet<>();
 
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
@@ -40,7 +40,7 @@ public class Film extends BaseModel {
             LocalDate releaseDate,
             int duration,
             Mpa mpa,
-            Genre genre
+            Set<Genre> genres
     ) {
         super(id);
         this.name = name;
@@ -48,6 +48,22 @@ public class Film extends BaseModel {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
-        this.genre = genre;
+        this.genres = genres;
+    }
+
+    public Film(
+            Integer id,
+            String name,
+            String description,
+            LocalDate releaseDate,
+            int duration,
+            Mpa mpa
+    ) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
     }
 }

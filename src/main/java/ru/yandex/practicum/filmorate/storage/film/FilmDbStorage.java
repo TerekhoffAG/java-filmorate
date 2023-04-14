@@ -12,7 +12,9 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static ru.yandex.practicum.filmorate.constant.FilmTable.*;
 
@@ -27,7 +29,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film save(Film film) {
         Mpa mpa = film.getMpa();
-        Genre genre = film.getGenre();
+        Set<Genre> genres = film.getGenres();
 
         int filmPK = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
@@ -44,10 +46,12 @@ public class FilmDbStorage implements FilmStorage {
                     .withTableName(TABLE_FILM_MPA)
                     .execute(Map.of(FILM_ID, filmPK, MPA_ID, mpa.getId()));
         }
-        if (genre != null) {
-            new SimpleJdbcInsert(jdbcTemplate)
-                    .withTableName(TABLE_FILM_GENRE)
-                    .execute(Map.of(FILM_ID, filmPK, GENRE_ID, genre.getId()));
+        if (!genres.isEmpty()) {
+            for (Genre genre : genres) {
+                new SimpleJdbcInsert(jdbcTemplate)
+                        .withTableName(TABLE_FILM_GENRE)
+                        .execute(Map.of(FILM_ID, filmPK, GENRE_ID, genre.getId()));
+            }
         }
 
         return film;
@@ -57,9 +61,9 @@ public class FilmDbStorage implements FilmStorage {
     public Film update(Film film) {
         Integer id = film.getId();
         Mpa mpa = film.getMpa();
-        Genre genre = film.getGenre();
+        Set<Genre> genres = film.getGenres();
 
-        if (isExists(id)) {
+        if (isExists(GET_BY_ID, id)) {
             jdbcTemplate.update(
                     UPDATE,
                     film.getName(),
@@ -71,8 +75,10 @@ public class FilmDbStorage implements FilmStorage {
             if (mpa != null) {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
-            if (genre != null) {
-                jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
+            if (!genres.isEmpty()) {
+                for (Genre genre : genres) {
+                    jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
+                }
             }
 
             return film;
@@ -84,7 +90,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film remove(Film film) {
         Integer id = film.getId();
-        if (isExists(id)) {
+        if (isExists(GET_BY_ID, id)) {
             jdbcTemplate.update(DELETE_FILM_LIKE, id);
             jdbcTemplate.update(DELETE_FILM_MPA, id);
             jdbcTemplate.update(DELETE_FILM_GENRE, id);
@@ -98,12 +104,23 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film findOne(Integer id) {
-        return jdbcTemplate.queryForObject(GET_ALL_BY_ID, filmRowMapper(), id);
+        Film film = jdbcTemplate.queryForObject(GET_ALL_BY_ID, filmRowMapper(), id);
+
+        if (film != null) {
+            Collection<Genre> genres = getGenresByFilm();
+            film.setGenres(new HashSet<>(genres));
+        }
+
+        return film;
     }
 
     @Override
     public Collection<Film> findAll() {
         return jdbcTemplate.query(GET_ALL, filmRowMapper());
+    }
+
+    private Collection<Genre> getGenresByFilm() {
+        return jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper());
     }
 
     private RowMapper<Film> filmRowMapper() {
@@ -113,13 +130,16 @@ public class FilmDbStorage implements FilmStorage {
                 rs.getString(DESCRIPTION),
                 rs.getDate(RELEASE_DATE).toLocalDate(),
                 rs.getInt(DURATION),
-                new Mpa(rs.getInt(MPA_ID)),
-                new Genre(rs.getInt(GENRE_ID))
+                new Mpa(rs.getInt(MPA_ID))
         );
     }
 
-    private boolean isExists(Integer id) {
-        SqlRowSet row = jdbcTemplate.queryForRowSet(GET_BY_ID, id);
+    private RowMapper<Genre> genreRowMapper() {
+        return (rs, rowNum) -> new Genre(rs.getInt(GENRE_ID));
+    }
+
+    private boolean isExists(String sql, Integer id) {
+        SqlRowSet row = jdbcTemplate.queryForRowSet(sql, id);
         return row.next();
     }
  }
