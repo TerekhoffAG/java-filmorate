@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -70,7 +71,11 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User findOne(Integer id) {
-        return jdbcTemplate.queryForObject(GET_BY_ID, userRowMapper(), id);
+        try {
+            return jdbcTemplate.queryForObject(GET_BY_ID, userRowMapper(), id);
+        } catch (DataAccessException e) {
+            return null;
+        }
     }
 
     @Override

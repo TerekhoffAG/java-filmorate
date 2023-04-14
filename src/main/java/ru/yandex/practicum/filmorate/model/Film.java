@@ -15,6 +15,8 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Film extends BaseModel {
     @NotBlank(message = ValidatorMessage.NOT_BLANK)
     private String name;

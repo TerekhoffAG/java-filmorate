@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -104,7 +105,11 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film findOne(Integer id) {
-        return jdbcTemplate.queryForObject(GET_ALL_BY_ID, filmRowMapper(), id);
+        try {
+            return jdbcTemplate.queryForObject(GET_ALL_BY_ID, filmRowMapper(), id);
+        } catch (DataAccessException e) {
+            return null;
+        }
     }
 
     @Override
