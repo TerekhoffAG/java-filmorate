@@ -11,10 +11,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static ru.yandex.practicum.filmorate.constant.FilmTable.*;
 
@@ -29,7 +26,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film save(Film film) {
         Mpa mpa = film.getMpa();
-        Set<Genre> genres = film.getGenres();
+        List<Genre> genres = film.getGenres();
 
         int filmPK = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
@@ -61,7 +58,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film update(Film film) {
         Integer id = film.getId();
         Mpa mpa = film.getMpa();
-        Set<Genre> genres = film.getGenres();
+        List<Genre> genres = film.getGenres();
 
         if (isExists(GET_BY_ID, id)) {
             jdbcTemplate.update(
@@ -76,8 +73,11 @@ public class FilmDbStorage implements FilmStorage {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
             if (!genres.isEmpty()) {
+                List<Genre> genresDB = getGenresByFilm(id);
                 for (Genre genre : genres) {
-                    jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
+                    if (!genresDB.contains(genre)) {
+                        jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
+                    }
                 }
             }
 
@@ -104,14 +104,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film findOne(Integer id) {
-        Film film = jdbcTemplate.queryForObject(GET_ALL_BY_ID, filmRowMapper(), id);
-
-        if (film != null) {
-            Collection<Genre> genres = getGenresByFilm();
-            film.setGenres(new HashSet<>(genres));
-        }
-
-        return film;
+        return jdbcTemplate.queryForObject(GET_ALL_BY_ID, filmRowMapper(), id);
     }
 
     @Override
@@ -119,8 +112,8 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(GET_ALL, filmRowMapper());
     }
 
-    private Collection<Genre> getGenresByFilm() {
-        return jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper());
+    private List<Genre> getGenresByFilm(Integer id) {
+        return jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper(), id);
     }
 
     private RowMapper<Film> filmRowMapper() {
@@ -130,7 +123,8 @@ public class FilmDbStorage implements FilmStorage {
                 rs.getString(DESCRIPTION),
                 rs.getDate(RELEASE_DATE).toLocalDate(),
                 rs.getInt(DURATION),
-                new Mpa(rs.getInt(MPA_ID))
+                new Mpa(rs.getInt(MPA_ID)),
+                getGenresByFilm(rs.getInt(ID))
         );
     }
 

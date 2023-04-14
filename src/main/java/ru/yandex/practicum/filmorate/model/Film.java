@@ -7,7 +7,9 @@ import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -28,7 +30,7 @@ public class Film extends BaseModel {
 
     private Mpa mpa;
 
-    private Set<Genre> genres = new HashSet<>();
+    private List<Genre> genres = new ArrayList<>();
 
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
@@ -40,7 +42,7 @@ public class Film extends BaseModel {
             LocalDate releaseDate,
             int duration,
             Mpa mpa,
-            Set<Genre> genres
+            List<Genre> genres
     ) {
         super(id);
         this.name = name;
