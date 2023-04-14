@@ -118,7 +118,7 @@ public class FilmDbStorage implements FilmStorage {
         );
     }
 
-    private boolean isExists (Integer id) {
+    private boolean isExists(Integer id) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(GET_BY_ID, id);
         return row.next();
     }

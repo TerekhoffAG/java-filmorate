@@ -10,8 +10,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@Builder
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Film extends BaseModel {
     @NotBlank(message = ValidatorMessage.NOT_BLANK)
@@ -26,26 +26,12 @@ public class Film extends BaseModel {
     @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
 
-    private Mpa mpa = null;
+    private Mpa mpa;
 
-    private Genre genre = null;
+    private Genre genre;
 
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
-
-    public Film(
-            Integer id,
-            String name,
-            String description,
-            LocalDate releaseDate,
-            int duration
-    ) {
-        super(id);
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-    }
 
     public Film(
             Integer id,

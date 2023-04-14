@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import ru.yandex.practicum.filmorate.annotation.DefaultFieldsUser;
 import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
@@ -12,8 +10,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@Builder
+@Getter
+@Setter
 @DefaultFieldsUser
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseModel {
