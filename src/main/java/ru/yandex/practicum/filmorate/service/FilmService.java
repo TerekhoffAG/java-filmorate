@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
@@ -20,7 +21,7 @@ public class FilmService extends AbstractModelService<Integer, Film> {
     private final Comparator<Film> sortingComparator = (a, b) -> b.getLikes().size() - a.getLikes().size();
 
     @Autowired
-    public FilmService(FilmStorage storage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage storage) {
         super(storage);
     }
 

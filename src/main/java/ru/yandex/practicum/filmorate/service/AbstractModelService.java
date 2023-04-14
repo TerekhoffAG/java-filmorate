@@ -4,13 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
-import ru.yandex.practicum.filmorate.model.DataModel;
+import ru.yandex.practicum.filmorate.model.BaseModel;
 import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.util.Collection;
 
 @Slf4j
-public abstract class AbstractModelService<K, M extends DataModel> {
+public abstract class AbstractModelService<K, M extends BaseModel> {
     protected final Storage<K, M> storage;
 
     public AbstractModelService(Storage<K, M> storage) {

@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @DefaultFieldsUser
 @EqualsAndHashCode(callSuper = true)
-public class User extends DataModel {
+public class User extends BaseModel {
     @Email(message = ValidatorMessage.EMAIL)
     @NotBlank(message = ValidatorMessage.NOT_BLANK)
     private String email;
@@ -32,4 +32,17 @@ public class User extends DataModel {
 
     @JsonIgnore
     private final Set<Integer> friends = new HashSet<>();
+
+    public User(
+            Integer id,
+            String email,
+            String login,
+            String name,
+            LocalDate birthday) {
+        super(id);
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+    }
 }

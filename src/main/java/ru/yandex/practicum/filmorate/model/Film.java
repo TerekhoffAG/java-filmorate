@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import ru.yandex.practicum.filmorate.annotation.ReleaseDate;
 import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
@@ -15,7 +13,7 @@ import java.util.Set;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class Film extends DataModel {
+public class Film extends BaseModel {
     @NotBlank(message = ValidatorMessage.NOT_BLANK)
     private String name;
 
@@ -28,6 +26,42 @@ public class Film extends DataModel {
     @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
 
+    private Mpa mpa = null;
+
+    private Genre genre = null;
+
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
+
+    public Film(
+            Integer id,
+            String name,
+            String description,
+            LocalDate releaseDate,
+            int duration
+    ) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+    }
+
+    public Film(
+            Integer id,
+            String name,
+            String description,
+            LocalDate releaseDate,
+            int duration,
+            Mpa mpa,
+            Genre genre
+    ) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+        this.genre = genre;
+    }
 }
