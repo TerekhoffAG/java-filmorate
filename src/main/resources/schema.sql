@@ -2,12 +2,12 @@ drop table if exists film, users, mpa, film_mpa, genre, film_genre, likes, frien
 
 create table if not exists mpa (
     id int primary key,
-    name varchar(5)
+    name varchar(50)
 );
 
 create table if not exists genre (
     id int primary key,
-    name varchar(14)
+    name varchar(50)
 );
 
 create table if not exists film (
