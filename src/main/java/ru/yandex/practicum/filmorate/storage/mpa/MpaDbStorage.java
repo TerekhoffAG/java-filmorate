@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.mpa;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,11 @@ public class MpaDbStorage implements SubStorage<Mpa, Integer> {
 
     @Override
     public Mpa findOne(Integer id) {
-        return jdbcTemplate.queryForObject(GET_BY_ID, mpaRowMapper(), id);
+        try {
+            return jdbcTemplate.queryForObject(GET_BY_ID, mpaRowMapper(), id);
+        } catch (DataAccessException e) {
+            return null;
+        }
     }
 
     @Override
