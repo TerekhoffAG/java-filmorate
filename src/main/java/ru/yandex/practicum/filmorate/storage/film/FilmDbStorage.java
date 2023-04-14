@@ -41,13 +41,13 @@ public class FilmDbStorage implements FilmStorage {
         film.setId(filmPK);
         if (mpa != null) {
             new SimpleJdbcInsert(jdbcTemplate)
-                    .withTableName(TABLE_MPA_NAME)
-                    .execute(Map.of(FILM_ID, filmPK, MPA_ID, mpa));
+                    .withTableName(TABLE_FILM_MPA)
+                    .execute(Map.of(FILM_ID, filmPK, MPA_ID, mpa.getId()));
         }
         if (genre != null) {
             new SimpleJdbcInsert(jdbcTemplate)
-                    .withTableName(TABLE_GENRE_NAME)
-                    .execute(Map.of(FILM_ID, filmPK, GENRE_ID, genre));
+                    .withTableName(TABLE_FILM_GENRE)
+                    .execute(Map.of(FILM_ID, filmPK, GENRE_ID, genre.getId()));
         }
 
         return film;
@@ -69,10 +69,10 @@ public class FilmDbStorage implements FilmStorage {
                     id
             );
             if (mpa != null) {
-                jdbcTemplate.update(UPDATE_FILM_MPA, mpa, id);
+                jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
             if (genre != null) {
-                jdbcTemplate.update(UPDATE_FILM_GENRE, genre, id);
+                jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
             }
 
             return film;
