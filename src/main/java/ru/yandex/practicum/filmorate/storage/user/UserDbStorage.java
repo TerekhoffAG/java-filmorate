@@ -89,7 +89,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     // TODO заменить на метод findOne если не работает
-    private boolean isExists (Integer id) {
+    private boolean isExists(Integer id) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(GET_BY_ID, id);
         return row.next();
     }
