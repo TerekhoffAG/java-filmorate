@@ -30,9 +30,9 @@ public class Film extends BaseModel {
     @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
 
-    private Mpa mpa;
+    private BaseModel mpa;
 
-    private List<BaseModel> genres = new ArrayList<>();
+    private Set<BaseModel> genres = new HashSet<>();
 
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
@@ -43,8 +43,8 @@ public class Film extends BaseModel {
             String description,
             LocalDate releaseDate,
             int duration,
-            Mpa mpa,
-            List<BaseModel> genres
+            BaseModel mpa,
+            Set<BaseModel> genres
     ) {
         super(id);
         this.name = name;
@@ -61,7 +61,7 @@ public class Film extends BaseModel {
             String description,
             LocalDate releaseDate,
             int duration,
-            Mpa mpa
+            BaseModel mpa
     ) {
         super(id);
         this.name = name;

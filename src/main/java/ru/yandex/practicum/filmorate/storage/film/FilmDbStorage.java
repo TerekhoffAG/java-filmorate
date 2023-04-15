@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.BaseModel;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.*;
 
@@ -26,8 +25,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film save(Film film) {
-        Mpa mpa = film.getMpa();
-        List<BaseModel> genres = film.getGenres();
+        BaseModel mpa = film.getMpa();
+        Set<BaseModel> genres = film.getGenres();
 
         int filmPK = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
@@ -58,8 +57,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         Integer id = film.getId();
-        Mpa mpa = film.getMpa();
-        List<BaseModel> genres = film.getGenres();
+        BaseModel mpa = film.getMpa();
+        Set<BaseModel> genres = film.getGenres();
 
         if (isExists(GET_BY_ID, id)) {
             jdbcTemplate.update(
@@ -74,7 +73,7 @@ public class FilmDbStorage implements FilmStorage {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
             if (!genres.isEmpty()) {
-                List<BaseModel> genresDB = getGenresByFilm(id);
+                Set<BaseModel> genresDB = getGenresByFilm(id);
                 for (BaseModel genre : genres) {
                     if (!genresDB.contains(genre)) {
                         jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
@@ -117,8 +116,10 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(GET_ALL, filmRowMapper());
     }
 
-    private List<BaseModel> getGenresByFilm(Integer id) {
-        return jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper(), id);
+    private Set<BaseModel> getGenresByFilm(Integer id) {
+        List<BaseModel> genres = jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper(), id);
+
+        return new HashSet<>(genres);
     }
 
     private RowMapper<Film> filmRowMapper() {
@@ -128,7 +129,7 @@ public class FilmDbStorage implements FilmStorage {
                 rs.getString(DESCRIPTION),
                 rs.getDate(RELEASE_DATE).toLocalDate(),
                 rs.getInt(DURATION),
-                new Mpa(rs.getInt(MPA_ID)),
+                new BaseModel(rs.getInt(MPA_ID)),
                 getGenresByFilm(rs.getInt(ID))
         );
     }
