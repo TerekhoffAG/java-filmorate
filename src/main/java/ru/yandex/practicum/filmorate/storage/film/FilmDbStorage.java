@@ -69,6 +69,8 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDuration(),
                     id
             );
+            jdbcTemplate.update(DELETE_FILM_MPA, id);
+            jdbcTemplate.update(DELETE_FILM_GENRE, id);
             if (mpa != null) {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
