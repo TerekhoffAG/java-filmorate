@@ -11,6 +11,8 @@ import ru.yandex.practicum.filmorate.constant.MpaTable;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.BaseModel;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.*;
 
@@ -26,8 +28,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film save(Film film) {
-        BaseModel mpa = film.getMpa();
-        Set<BaseModel> genres = film.getGenres();
+        Mpa mpa = film.getMpa();
+        Set<Genre> genres = film.getGenres();
 
         int filmId = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
@@ -57,8 +59,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         Integer id = film.getId();
-        BaseModel mpa = film.getMpa();
-        Set<BaseModel> genres = film.getGenres();
+        Mpa mpa = film.getMpa();
+        Set<Genre> genres = film.getGenres();
 
         if (isExists(GET_BY_ID, id)) {
             jdbcTemplate.update(
@@ -116,8 +118,8 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(GET_ALL, filmRowMapper());
     }
 
-    private Set<BaseModel> getGenresByFilm(Integer id) {
-        List<BaseModel> genres = jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper(), id);
+    private Set<Genre> getGenresByFilm(Integer id) {
+        List<Genre> genres = jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper(), id);
 
         return new HashSet<>(genres);
     }
@@ -129,13 +131,13 @@ public class FilmDbStorage implements FilmStorage {
                 rs.getString(DESCRIPTION),
                 rs.getDate(RELEASE_DATE).toLocalDate(),
                 rs.getInt(DURATION),
-                new BaseModel(rs.getInt(MPA_ID)),
+                new Mpa(rs.getInt(MPA_ID), rs.getString(MPA_NAME)),
                 getGenresByFilm(rs.getInt(ID))
         );
     }
 
-    private RowMapper<BaseModel> genreRowMapper() {
-        return (rs, rowNum) -> new BaseModel(rs.getInt(GENRE_ID));
+    private RowMapper<Genre> genreRowMapper() {
+        return (rs, rowNum) -> new Genre(rs.getInt(GENRE_ID), rs.getString(NAME));
     }
 
     private boolean isExists(String sql, Integer id) {
