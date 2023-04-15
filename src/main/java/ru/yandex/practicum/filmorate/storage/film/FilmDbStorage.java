@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
+import ru.yandex.practicum.filmorate.constant.MpaTable;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.BaseModel;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -38,7 +39,7 @@ public class FilmDbStorage implements FilmStorage {
                         DURATION, film.getDuration()
                 )).intValue(); // TODO проверить что возвращает id
         film.setId(filmPK);
-        if (mpa != null) {
+        if (mpa != null && isExists(MpaTable.GET_BY_ID, mpa.getId())) {
             new SimpleJdbcInsert(jdbcTemplate)
                     .withTableName(TABLE_FILM_MPA)
                     .execute(Map.of(FILM_ID, filmPK, MPA_ID, mpa.getId()));
@@ -71,7 +72,7 @@ public class FilmDbStorage implements FilmStorage {
             );
             jdbcTemplate.update(DELETE_FILM_MPA, id);
             jdbcTemplate.update(DELETE_FILM_GENRE, id);
-            if (mpa != null) {
+            if (mpa != null && isExists(MpaTable.GET_BY_ID, mpa.getId())) {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
             if (!genres.isEmpty()) {
