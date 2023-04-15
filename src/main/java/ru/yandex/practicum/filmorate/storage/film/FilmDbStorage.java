@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.model.BaseModel;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -27,7 +28,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film save(Film film) {
         Mpa mpa = film.getMpa();
-        List<Genre> genres = film.getGenres();
+        List<BaseModel> genres = film.getGenres();
 
         int filmPK = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
@@ -45,7 +46,7 @@ public class FilmDbStorage implements FilmStorage {
                     .execute(Map.of(FILM_ID, filmPK, MPA_ID, mpa.getId()));
         }
         if (!genres.isEmpty()) {
-            for (Genre genre : genres) {
+            for (BaseModel genre : genres) {
                 new SimpleJdbcInsert(jdbcTemplate)
                         .withTableName(TABLE_FILM_GENRE)
                         .execute(Map.of(FILM_ID, filmPK, GENRE_ID, genre.getId()));
@@ -59,7 +60,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film update(Film film) {
         Integer id = film.getId();
         Mpa mpa = film.getMpa();
-        List<Genre> genres = film.getGenres();
+        List<BaseModel> genres = film.getGenres();
 
         if (isExists(GET_BY_ID, id)) {
             jdbcTemplate.update(
@@ -74,8 +75,8 @@ public class FilmDbStorage implements FilmStorage {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
             if (!genres.isEmpty()) {
-                List<Genre> genresDB = getGenresByFilm(id);
-                for (Genre genre : genres) {
+                List<BaseModel> genresDB = getGenresByFilm(id);
+                for (BaseModel genre : genres) {
                     if (!genresDB.contains(genre)) {
                         jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
                     }
@@ -117,7 +118,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(GET_ALL, filmRowMapper());
     }
 
-    private List<Genre> getGenresByFilm(Integer id) {
+    private List<BaseModel> getGenresByFilm(Integer id) {
         return jdbcTemplate.query(GET_FILM_GENRES, genreRowMapper(), id);
     }
 
@@ -133,8 +134,8 @@ public class FilmDbStorage implements FilmStorage {
         );
     }
 
-    private RowMapper<Genre> genreRowMapper() {
-        return (rs, rowNum) -> new Genre(rs.getInt(GENRE_ID));
+    private RowMapper<BaseModel> genreRowMapper() {
+        return (rs, rowNum) -> new BaseModel(rs.getInt(GENRE_ID));
     }
 
     private boolean isExists(String sql, Integer id) {

@@ -32,7 +32,7 @@ public class Film extends BaseModel {
 
     private Mpa mpa;
 
-    private List<Genre> genres = new ArrayList<>();
+    private List<BaseModel> genres = new ArrayList<>();
 
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
@@ -44,7 +44,7 @@ public class Film extends BaseModel {
             LocalDate releaseDate,
             int duration,
             Mpa mpa,
-            List<Genre> genres
+            List<BaseModel> genres
     ) {
         super(id);
         this.name = name;
