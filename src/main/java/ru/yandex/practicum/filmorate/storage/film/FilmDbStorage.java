@@ -37,8 +37,7 @@ public class FilmDbStorage implements FilmStorage {
                         DESCRIPTION, film.getDescription(),
                         RELEASE_DATE, film.getReleaseDate(),
                         DURATION, film.getDuration()
-                )).intValue(); // TODO проверить что возвращает id
-        film.setId(filmPK);
+                )).intValue();
         if (mpa != null && isExists(MpaTable.GET_BY_ID, mpa.getId())) {
             new SimpleJdbcInsert(jdbcTemplate)
                     .withTableName(TABLE_FILM_MPA)
@@ -52,7 +51,7 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
 
-        return film;
+        return findOne(filmPK);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class FilmDbStorage implements FilmStorage {
                 }
             }
 
-            return film;
+            return findOne(id);
         } else {
             throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
         }
