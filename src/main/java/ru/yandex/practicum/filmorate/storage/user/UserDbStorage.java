@@ -34,7 +34,7 @@ public class UserDbStorage implements UserStorage {
                         LOGIN, user.getLogin(),
                         NAME, user.getName(),
                         BIRTHDAY, Date.valueOf(user.getBirthday())
-                )).intValue(); // TODO проверить что возвращает id
+                )).intValue();
         user.setId(userPK);
 
         return user;
@@ -93,7 +93,6 @@ public class UserDbStorage implements UserStorage {
         );
     }
 
-    // TODO заменить на метод findOne если не работает
     private boolean isExists(Integer id) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(GET_BY_ID, id);
         return row.next();

@@ -27,7 +27,7 @@ create table if not exists users (
 );
 
 create table if not exists film_genre (
-    film_id int primary key references film (id),
+    film_id int references film (id),
     genre_id int references genre (id)
 );
 

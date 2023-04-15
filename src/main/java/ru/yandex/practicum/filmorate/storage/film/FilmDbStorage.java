@@ -29,7 +29,7 @@ public class FilmDbStorage implements FilmStorage {
         BaseModel mpa = film.getMpa();
         Set<BaseModel> genres = film.getGenres();
 
-        int filmPK = new SimpleJdbcInsert(jdbcTemplate)
+        int filmId = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
                 .usingGeneratedKeyColumns(ID)
                 .executeAndReturnKey(Map.of(
@@ -38,20 +38,20 @@ public class FilmDbStorage implements FilmStorage {
                         RELEASE_DATE, film.getReleaseDate(),
                         DURATION, film.getDuration()
                 )).intValue();
-        if (mpa != null && isExists(MpaTable.GET_BY_ID, mpa.getId())) {
+        if (isExists(MpaTable.GET_BY_ID, mpa.getId())) {
             new SimpleJdbcInsert(jdbcTemplate)
                     .withTableName(TABLE_FILM_MPA)
-                    .execute(Map.of(FILM_ID, filmPK, MPA_ID, mpa.getId()));
+                    .execute(Map.of(FILM_ID, filmId, MPA_ID, mpa.getId()));
         }
         if (!genres.isEmpty()) {
             for (BaseModel genre : genres) {
                 new SimpleJdbcInsert(jdbcTemplate)
                         .withTableName(TABLE_FILM_GENRE)
-                        .execute(Map.of(FILM_ID, filmPK, GENRE_ID, genre.getId()));
+                        .execute(Map.of(FILM_ID, filmId, GENRE_ID, genre.getId()));
             }
         }
 
-        return findOne(filmPK);
+        return findOne(filmId);
     }
 
     @Override
@@ -69,17 +69,15 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDuration(),
                     id
             );
-            jdbcTemplate.update(DELETE_FILM_MPA, id);
             jdbcTemplate.update(DELETE_FILM_GENRE, id);
-            if (mpa != null && isExists(MpaTable.GET_BY_ID, mpa.getId())) {
+            if (isExists(MpaTable.GET_BY_ID, mpa.getId())) {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
             if (!genres.isEmpty()) {
-                Set<BaseModel> genresDB = getGenresByFilm(id);
                 for (BaseModel genre : genres) {
-                    if (!genresDB.contains(genre)) {
-                        jdbcTemplate.update(UPDATE_FILM_GENRE, genre.getId(), id);
-                    }
+                    new SimpleJdbcInsert(jdbcTemplate)
+                            .withTableName(TABLE_FILM_GENRE)
+                            .execute(Map.of(FILM_ID, id, GENRE_ID, genre.getId()));
                 }
             }
 
@@ -144,4 +142,4 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet row = jdbcTemplate.queryForRowSet(sql, id);
         return row.next();
     }
- }
+}
