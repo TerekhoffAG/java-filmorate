@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.LogMessage;
-import ru.yandex.practicum.filmorate.exception.FilmDoubleLikeException;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -27,21 +26,13 @@ public class FilmService extends AbstractModelService<Integer, Film> {
     }
 
     public void saveLike(Integer filmId, Integer userId) {
-        Integer res = filmStorage.addLike(userId, filmId);
-        if (res != null) {
-            log.info(LogMessage.ADD_LIKE, userId);
-        } else {
-            throw new FilmDoubleLikeException(ExpMessage.NOT_ADD_DOUBLE_LIKE);
-        }
+        filmStorage.addLike(userId, filmId);
+        log.info(LogMessage.ADD_LIKE, userId);
     }
 
     public void removeLike(Integer filmId, Integer userId) {
-        Integer res = filmStorage.removeLike(filmId, userId);
-        if (res != null) {
-            log.info(LogMessage.REMOVE_LIKE, userId);
-        } else {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_LIKE, userId));
-        }
+        filmStorage.removeLike(filmId, userId);
+        log.info(LogMessage.REMOVE_LIKE, userId);
     }
 
     public List<Film> getRatingFilms(int count) {

@@ -18,6 +18,7 @@ import java.util.*;
 
 import static ru.yandex.practicum.filmorate.constant.FilmTable.*;
 import static ru.yandex.practicum.filmorate.constant.LikesTable.*;
+import static ru.yandex.practicum.filmorate.constant.UserTable.GET_BY_ID;
 
 @Component("filmDbStorage")
 public class FilmDbStorage implements FilmStorage {
@@ -117,23 +118,17 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Integer addLike(Integer userId, Integer filmId) {
+    public void addLike(Integer userId, Integer filmId) {
         checkFilm(filmId);
-        try {
-            return jdbcTemplate.update(ADD_LIKE, filmId, userId);
-        } catch (DataAccessException e) {
-            return null;
-        }
+        checkUser(userId);
+        jdbcTemplate.update(ADD_LIKE, filmId, userId);
     }
 
     @Override
-    public Integer removeLike(Integer filmId, Integer userId) {
+    public void removeLike(Integer filmId, Integer userId) {
         checkFilm(filmId);
-        try {
-            return jdbcTemplate.update(REMOVE_LIKE, filmId, userId);
-        } catch (DataAccessException e) {
-            return null;
-        }
+        checkUser(userId);
+        jdbcTemplate.update(REMOVE_LIKE, filmId, userId);
     }
 
     @Override
@@ -168,9 +163,15 @@ public class FilmDbStorage implements FilmStorage {
         return row.next();
     }
 
-    private void checkFilm(Integer id) {
-        if (!isExists(GET_BY_ID, id)) {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
+    private void checkFilm(Integer filmId) {
+        if (!isExists(GET_BY_ID, filmId)) {
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, filmId));
+        }
+    }
+
+    private void checkUser(Integer userId) {
+        if (!isExists(GET_BY_ID, userId)) {
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, userId));
         }
     }
 }

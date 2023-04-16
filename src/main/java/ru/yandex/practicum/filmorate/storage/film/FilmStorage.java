@@ -6,9 +6,9 @@ import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.List;
 
 public interface FilmStorage extends Storage<Integer, Film> {
-    Integer addLike(Integer userId, Integer filmId);
+    void addLike(Integer userId, Integer filmId);
 
-    Integer removeLike(Integer filmId, Integer userId);
+    void removeLike(Integer filmId, Integer userId);
 
     List<Film> getPopularFilms(Integer count);
 }
