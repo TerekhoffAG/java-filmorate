@@ -84,7 +84,6 @@ public class UserDbStorage implements UserStorage {
         checkExists(id);
         checkExists(otherId);
         jdbcTemplate.update(ADD_FRIEND, id, otherId);
-        jdbcTemplate.update(ADD_FRIEND, otherId, id);
     }
 
     @Override
