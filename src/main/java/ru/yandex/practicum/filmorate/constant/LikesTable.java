@@ -8,7 +8,7 @@ public final class LikesTable {
             "left join film_mpa as fm on f.id = fm.film_id " +
             "left join mpa as m on m.id = fm.mpa_id " +
             "left join likes as l on f.id = l.film_id " +
-            "group by f.film_id " +
+            "group by f.id " +
             "order by rating desc " +
             "limit ?";
 }
