@@ -171,7 +171,7 @@ public class FilmDbStorage implements FilmStorage {
 
     private void checkUser(Integer userId) {
         if (!isExists(GET_BY_ID, userId)) {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, userId));
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER));
         }
     }
 }
