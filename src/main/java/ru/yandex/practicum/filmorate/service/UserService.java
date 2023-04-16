@@ -41,12 +41,7 @@ public class UserService extends AbstractModelService<Integer, User> {
     }
 
     public Collection<User> getFriends(Integer id) {
-        Collection<User> friends = userStorage.findFriends(id);
-        if (friends.isEmpty()) {
-            throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
-        }
-
-        return friends;
+        return userStorage.findFriends(id);
     }
 
     /**
