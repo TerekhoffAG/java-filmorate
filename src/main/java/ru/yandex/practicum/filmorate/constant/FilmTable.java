@@ -14,7 +14,7 @@ public final class FilmTable {
     public static final String TABLE_FILM_GENRE = "film_genre";
     public static final String FILM_ID = "film_id";
     public static final String GET_BY_ID = "select * from film where id = ?";
-    public static final String GET_ALL_BY_ID = "select f.id, f.name, f.description, f.release_date, f.duration, fm.mpa_id, m.name as mpa_name " +
+    public static final String GET_FULL_BY_ID = "select f.id, f.name, f.description, f.release_date, f.duration, fm.mpa_id, m.name as mpa_name " +
             "from film as f " +
             "left join film_mpa as fm on f.id = fm.film_id " +
             "left join mpa as m on m.id = fm.mpa_id " +

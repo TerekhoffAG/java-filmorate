@@ -8,11 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class InMemoryUserStorage implements UserStorage {
+public class InMemoryUserStorage {
     private final Map<Integer, User> users = new HashMap<>();
     private int idGenerator = 0;
 
-    @Override
     public User save(User user) {
         int id = ++idGenerator;
         user.setId(id);
@@ -20,7 +19,6 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    @Override
     public User update(User user) {
         int id = user.getId();
         if (users.containsKey(id)) {
@@ -31,17 +29,14 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    @Override
     public User remove(User user) {
         return users.remove(user.getId());
     }
 
-    @Override
     public User findOne(Integer id) {
         return users.getOrDefault(id, null);
     }
 
-    @Override
     public Collection<User> findAll() {
         return users.values();
     }

@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.util.*;
 
 import static ru.yandex.practicum.filmorate.constant.FilmTable.*;
+import static ru.yandex.practicum.filmorate.constant.LikesTable.*;
 
 @Component("filmDbStorage")
 public class FilmDbStorage implements FilmStorage {
@@ -92,22 +93,19 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film remove(Film film) {
         Integer id = film.getId();
-        if (isExists(GET_BY_ID, id)) {
-            jdbcTemplate.update(DELETE_FILM_LIKE, id);
-            jdbcTemplate.update(DELETE_FILM_MPA, id);
-            jdbcTemplate.update(DELETE_FILM_GENRE, id);
-            jdbcTemplate.update(DELETE, id);
+        checkFilm(id);
+        jdbcTemplate.update(DELETE_FILM_LIKE, id);
+        jdbcTemplate.update(DELETE_FILM_MPA, id);
+        jdbcTemplate.update(DELETE_FILM_GENRE, id);
+        jdbcTemplate.update(DELETE, id);
 
-            return film;
-        } else {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
-        }
+        return film;
     }
 
     @Override
     public Film findOne(Integer id) {
         try {
-            return jdbcTemplate.queryForObject(GET_ALL_BY_ID, filmRowMapper(), id);
+            return jdbcTemplate.queryForObject(GET_FULL_BY_ID, filmRowMapper(), id);
         } catch (DataAccessException e) {
             return null;
         }
@@ -116,6 +114,31 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Film> findAll() {
         return jdbcTemplate.query(GET_ALL, filmRowMapper());
+    }
+
+    @Override
+    public Integer addLike(Integer userId, Integer filmId) {
+        checkFilm(filmId);
+        try {
+            return jdbcTemplate.update(ADD_LIKE, filmId, userId);
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Integer removeLike(Integer filmId, Integer userId) {
+        checkFilm(filmId);
+        try {
+            return jdbcTemplate.update(REMOVE_LIKE, filmId, userId);
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Film> getPopularFilms(Integer count) {
+        return jdbcTemplate.query(GET_TOP_FILMS, filmRowMapper(), count);
     }
 
     private Set<Genre> getGenresByFilm(Integer id) {
@@ -143,5 +166,11 @@ public class FilmDbStorage implements FilmStorage {
     private boolean isExists(String sql, Integer id) {
         SqlRowSet row = jdbcTemplate.queryForRowSet(sql, id);
         return row.next();
+    }
+
+    private void checkFilm(Integer id) {
+        if (!isExists(GET_BY_ID, id)) {
+            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, id));
+        }
     }
 }

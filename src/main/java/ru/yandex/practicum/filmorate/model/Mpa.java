@@ -7,10 +7,6 @@ import lombok.Setter;
 @Setter
 public class Mpa extends BaseModel {
     private String name;
-//
-//    public Mpa(Integer id) {
-//        super(id);
-//    }
 
     public Mpa(Integer id, String name) {
         super(id);

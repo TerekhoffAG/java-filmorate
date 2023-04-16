@@ -12,77 +12,47 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserService extends AbstractModelService<Integer, User> {
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService(@Qualifier("userDbStorage") UserStorage storage) {
         super(storage);
+        this.userStorage = storage;
     }
 
-    public void saveFriend(Integer id, Integer otherUserId) {
-        if (id != otherUserId) {
-            User user = getModelsById(id);
-            User otherUser = getModelsById(otherUserId);
-            checkUsers(user, otherUser);
+    public void saveFriend(Integer id, Integer otherId) {
+        if (id != otherId) {
+            userStorage.saveFriend(id, otherId);
 
-            user.getFriends().add(otherUserId);
-            otherUser.getFriends().add(id);
-
-            log.info(String.format(LogMessage.ADD_FRIEND, id, otherUserId));
+            log.info(String.format(LogMessage.ADD_FRIEND, id, otherId));
         } else {
             throw new UserHimselfFriendException(ExpMessage.NOT_ADD_FRIEND_HIMSELF);
         }
     }
 
-    public void removeFriend(Integer id, Integer otherUserId) {
-        User user = getModelsById(id);
-        User otherUser = getModelsById(otherUserId);
-        checkUsers(user, otherUser);
+    public void removeFriend(Integer id, Integer otherId) {
+        userStorage.removeFriend(id, otherId);
 
-        user.getFriends().remove(otherUserId);
-        otherUser.getFriends().remove(id);
-
-        log.info(String.format(LogMessage.REMOVE_FRIEND, id, otherUserId));
+        log.info(String.format(LogMessage.REMOVE_FRIEND, id, otherId));
     }
 
     public Collection<User> getFriends(Integer id) {
-        User user = getModelsById(id);
-        if (user != null) {
-            Set<Integer> friends = user.getFriends();
-            if (!friends.isEmpty()) {
-                return user.getFriends().stream()
-                        .map(storage::findOne)
-                        .collect(Collectors.toList());
-            } else {
-                throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
-            }
-        } else {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER));
+        Collection<User> friends = userStorage.findFriends(id);
+        if (friends.isEmpty()) {
+            throw new ObjectNotFoundException(ExpMessage.NOT_FOUND_FRIENDS_LIST);
         }
+
+        return friends;
     }
 
     /**
      * Получение списка общих друзей.
      */
-    public Collection<User> getCommonFriends(int id, int otherId) {
-        User user = getModelsById(id);
-        User otherUser = getModelsById(otherId);
-        checkUsers(user, otherUser);
-
-        return user.getFriends().stream()
-                .filter(otherUser.getFriends()::contains)
-                .map(storage::findOne)
-                .collect(Collectors.toList());
-    }
-
-    private void checkUsers(User user, User otherUser) {
-        if (user == null || otherUser == null) {
-            throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER));
-        }
+    public Collection<User> getCommonFriends(Integer id, Integer otherId) {
+        return userStorage.getCommonFriends(id, otherId);
     }
 }
