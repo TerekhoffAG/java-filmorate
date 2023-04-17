@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.constant.ExpMessage;
+import ru.yandex.practicum.filmorate.constant.FilmTable;
 import ru.yandex.practicum.filmorate.constant.MpaTable;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.BaseModel;
@@ -64,7 +65,7 @@ public class FilmDbStorage implements FilmStorage {
         Mpa mpa = film.getMpa();
         Set<Genre> genres = film.getGenres();
 
-        if (isExists(GET_BY_ID, id)) {
+        if (isExists(FilmTable.GET_BY_ID, id)) {
             jdbcTemplate.update(
                     UPDATE,
                     film.getName(),
@@ -164,7 +165,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void checkFilm(Integer filmId) {
-        if (!isExists(GET_BY_ID, filmId)) {
+        if (!isExists(FilmTable.GET_BY_ID, filmId)) {
             throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_FILM, filmId));
         }
     }
