@@ -34,4 +34,5 @@ public final class FilmTable {
     public static final String UPDATE = "update film set name = ?, description = ?, release_date = ?, duration = ? where id = ?";
     public static final String UPDATE_FILM_MPA = "update film_mpa set mpa_id = ? where film_id = ?";
     public static final String UPDATE_FILM_GENRE = "update film_genre set genre_id = ? where film_id = ?";
+    public static final String ADD_FILM_GENRE = "insert into film_genre (film_id, genre_id) values (?, ?)";
 }

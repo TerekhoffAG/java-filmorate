@@ -32,9 +32,6 @@ public class Film extends BaseModel {
 
     private Set<Genre> genres = new HashSet<>();
 
-    @JsonIgnore
-    private final Set<Integer> likes = new HashSet<>();
-
     public Film(
             Integer id,
             String name,

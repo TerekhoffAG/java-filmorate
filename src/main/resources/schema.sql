@@ -27,24 +27,24 @@ create table if not exists users (
 );
 
 create table if not exists film_genre (
-    film_id int references film (id),
-    genre_id int references genre (id)
+    film_id int references film (id) on delete cascade,
+    genre_id int references genre (id) on delete cascade
 );
 
 create table if not exists film_mpa (
     film_id int primary key,
-    mpa_id int references mpa (id)
+    mpa_id int references mpa (id) on delete cascade
 );
 
 create table if not exists friend (
-    user_id int references users (id),
-    friend_id int references users (id),
+    user_id int references users (id) on delete cascade,
+    friend_id int references users (id) on delete cascade,
     friend_status int,
     constraint friend_pk primary key (user_id, friend_id)
 );
 
 create table if not exists likes (
-    film_id int references film (id),
-    user_id int references users (id),
+    film_id int references film (id) on delete cascade,
+    user_id int references users (id) on delete cascade,
     constraint likes_pk primary key (film_id, user_id)
 );

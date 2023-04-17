@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,11 +11,12 @@ import ru.yandex.practicum.filmorate.constant.ExpMessage;
 import ru.yandex.practicum.filmorate.constant.FilmTable;
 import ru.yandex.practicum.filmorate.constant.MpaTable;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
-import ru.yandex.practicum.filmorate.model.BaseModel;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 import static ru.yandex.practicum.filmorate.constant.FilmTable.*;
@@ -32,9 +34,9 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film save(Film film) {
         Mpa mpa = film.getMpa();
-        Set<Genre> genres = film.getGenres();
+        List<Genre> genres = new ArrayList<>(film.getGenres());
 
-        int filmId = new SimpleJdbcInsert(jdbcTemplate)
+        Integer filmId = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
                 .usingGeneratedKeyColumns(ID)
                 .executeAndReturnKey(Map.of(
@@ -49,11 +51,7 @@ public class FilmDbStorage implements FilmStorage {
                     .execute(Map.of(FILM_ID, filmId, MPA_ID, mpa.getId()));
         }
         if (!genres.isEmpty()) {
-            for (BaseModel genre : genres) {
-                new SimpleJdbcInsert(jdbcTemplate)
-                        .withTableName(TABLE_FILM_GENRE)
-                        .execute(Map.of(FILM_ID, filmId, GENRE_ID, genre.getId()));
-            }
+            jdbcTemplate.batchUpdate(ADD_FILM_GENRE, initFilmGenreValues(filmId, genres));
         }
 
         return findOne(filmId);
@@ -63,7 +61,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film update(Film film) {
         Integer id = film.getId();
         Mpa mpa = film.getMpa();
-        Set<Genre> genres = film.getGenres();
+        List<Genre> genres = new ArrayList<>(film.getGenres());
 
         if (isExists(FilmTable.GET_BY_ID, id)) {
             jdbcTemplate.update(
@@ -79,11 +77,7 @@ public class FilmDbStorage implements FilmStorage {
                 jdbcTemplate.update(UPDATE_FILM_MPA, mpa.getId(), id);
             }
             if (!genres.isEmpty()) {
-                for (BaseModel genre : genres) {
-                    new SimpleJdbcInsert(jdbcTemplate)
-                            .withTableName(TABLE_FILM_GENRE)
-                            .execute(Map.of(FILM_ID, id, GENRE_ID, genre.getId()));
-                }
+                jdbcTemplate.batchUpdate(ADD_FILM_GENRE, initFilmGenreValues(id, genres));
             }
 
             return findOne(id);
@@ -96,9 +90,6 @@ public class FilmDbStorage implements FilmStorage {
     public Film remove(Film film) {
         Integer id = film.getId();
         checkFilm(id);
-        jdbcTemplate.update(DELETE_FILM_LIKE, id);
-        jdbcTemplate.update(DELETE_FILM_MPA, id);
-        jdbcTemplate.update(DELETE_FILM_GENRE, id);
         jdbcTemplate.update(DELETE, id);
 
         return film;
@@ -174,5 +165,20 @@ public class FilmDbStorage implements FilmStorage {
         if (!isExists(GET_BY_ID, userId)) {
             throw new ObjectNotFoundException(String.format(ExpMessage.NOT_FOUND_USER));
         }
+    }
+
+    private BatchPreparedStatementSetter initFilmGenreValues(Integer filmId, List<Genre> genres) {
+        return new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setString(1, filmId.toString());
+                ps.setString(2, genres.get(i).getId().toString());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return genres.size();
+            }
+        };
     }
 }

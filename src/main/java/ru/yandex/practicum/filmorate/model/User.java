@@ -28,9 +28,6 @@ public class User extends BaseModel {
     @PastOrPresent(message = ValidatorMessage.PAST_DATE)
     private LocalDate birthday;
 
-    @JsonIgnore
-    private final Set<Integer> friends = new HashSet<>();
-
     public User(
             Integer id,
             String email,

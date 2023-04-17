@@ -10,14 +10,12 @@ import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
 @Service
 public class FilmService extends AbstractModelService<Integer, Film> {
     private final FilmStorage filmStorage;
-    private final Comparator<Film> sortingComparator = (a, b) -> b.getLikes().size() - a.getLikes().size();
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage storage) {
