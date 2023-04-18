@@ -20,12 +20,7 @@ public class ValidatorFilmTest {
     @BeforeEach
     void beforeEach() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
-        film = Film.builder()
-                .name("nisi eiusmod")
-                .description("adipisicing")
-                .releaseDate(LocalDate.of(1967, 1, 25))
-                .duration(100)
-                .build();
+        film = new Film(1, "nisi eiusmod", "adipisicing", LocalDate.of(1967, 1, 25), 100, null, null);
     }
 
     @Test

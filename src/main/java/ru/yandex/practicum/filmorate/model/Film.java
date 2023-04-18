@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import ru.yandex.practicum.filmorate.annotation.ReleaseDate;
 import ru.yandex.practicum.filmorate.constant.ValidatorMessage;
 
@@ -12,10 +9,12 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@Builder
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
-public class Film extends DataModel {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Film extends BaseModel {
     @NotBlank(message = ValidatorMessage.NOT_BLANK)
     private String name;
 
@@ -28,6 +27,41 @@ public class Film extends DataModel {
     @Positive(message = ValidatorMessage.POSITIVE)
     private int duration;
 
-    @JsonIgnore
-    private final Set<Integer> likes = new HashSet<>();
+    private Mpa mpa;
+
+    private Set<Genre> genres = new HashSet<>();
+
+    public Film(
+            Integer id,
+            String name,
+            String description,
+            LocalDate releaseDate,
+            int duration,
+            Mpa mpa,
+            Set<Genre> genres
+    ) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
+    }
+
+    public Film(
+            Integer id,
+            String name,
+            String description,
+            LocalDate releaseDate,
+            int duration,
+            Mpa mpa
+    ) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+    }
 }
